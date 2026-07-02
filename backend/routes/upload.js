@@ -6,9 +6,7 @@ const cloudinary = require('../config/cloudinary');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post('/', upload.single('image'), (req, res) => {
-      console.log("UPLOAD ROUTE HIT");  // 👈 ADD THIS
-      console.log("FILE:", req.file);    // 👈 ADD THIS
+router.post('/', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
@@ -17,9 +15,7 @@ router.post('/', upload.single('image'), (req, res) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: 'sivakasi-boutique' },
       (error, result) => {
-        if (error) {
-          return res.status(500).json({ message: error.message });
-        }
+        if (error) return res.status(500).json(error);
 
         return res.json({
           success: true,
